@@ -1,20 +1,15 @@
-<h1>Real Time Messaging</h1>
-<pre id="messages" style="height: 400px; overflow: scroll"></pre>
-<input type="text" id="messageBox" placeholder="Type your message here" style="display: block; width: 100%; margin-bottom: 10px; padding: 10px;" />
-<button id="send" title="Send Message!" style="width: 100%; height: 30px;">Send Message</button>
-
+<button id="log">Log</button>
+<div id="logs"></div>
 <script>
   (function() {
-    const sendBtn = document.querySelector('#send');
-    const messages = document.querySelector('#messages');
-    const messageBox = document.querySelector('#messageBox');
+    const logBtn = document.querySelector('#log');
+    const logDiv = document.querySelector('#logs');
+
 
     let ws;
 
     function showMessage(message) {
-      messages.textContent += `\n\n${message}`;
-      messages.scrollTop = messages.scrollHeight;
-      messageBox.value = '';
+      logDiv.append(`${message} \n`)
     }
 
     function init() {
@@ -23,24 +18,18 @@
         ws.close();
       }
 
-      ws = new WebSocket('ws://localhost:6969');
-      ws.onopen = () => {
-        console.log('Connection opened!');
-      }
+      ws = new WebSocket('ws://127.0.0.1:6969');
       ws.onmessage = ({ data }) => showMessage(data);
-      ws.onclose = function() {
-        ws = null;
-      }
+     
     }
 
-    sendBtn.onclick = function() {
+    logBtn.onclick = function() {
       if (!ws) {
         showMessage("No WebSocket connection :(");
         return ;
       }
 
-      ws.send(messageBox.value);
-      showMessage(messageBox.value);
+      ws.send('Log');
     }
 
     init();
